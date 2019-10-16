@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
+import { isSameDate } from './dateComparator';
 
 const Wrapper = styled.div`
     box-sizing: border-box;
@@ -51,100 +52,6 @@ const Wrapper = styled.div`
         }
     }
 `;
-
-const isSameDate = (startDate, date2, endDate) => {
-    const startDateObj = {
-        year: startDate.getFullYear(),
-        month: startDate.getMonth(),
-        day: startDate.getDate()
-    };
-
-    const cellDate = {
-        year: date2.getFullYear(),
-        month: date2.getMonth(),
-        day: date2.getDate()
-    };
-
-    if (endDate) {
-        const endDateObj = {
-            year: endDate.getFullYear(),
-            month: endDate.getMonth(),
-            day: endDate.getDate()
-        };
-        for (const key in startDateObj) {
-            if (
-                cellDate['year'] < endDateObj['year'] &&
-                cellDate['year'] > startDateObj['year']
-            )
-                return true;
-            if (
-                cellDate['month'] < endDateObj['month'] &&
-                cellDate['month'] > startDateObj['month']
-            )
-                return true;
-            if (startDateObj['month'] < endDateObj['month']) {
-                if (cellDate['month'] === endDateObj['month']) {
-                    if (cellDate['day'] > endDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                if (cellDate['month'] === startDateObj['month']) {
-                    if (cellDate['day'] < startDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
-            if (startDateObj['year'] < endDateObj['year']) {
-                if (
-                    cellDate['year'] === startDateObj['year'] &&
-                    cellDate['month'] > startDateObj['month']
-                ) {
-                    return true;
-                }
-                if (
-                    cellDate['year'] === endDateObj['year'] &&
-                    cellDate['month'] < endDateObj['month']
-                ) {
-                    return true;
-                }
-                if (
-                    cellDate['year'] === endDateObj['year'] &&
-                    cellDate['month'] === endDateObj['month']
-                ) {
-                    if (cellDate['day'] > endDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                if (cellDate['year'] === startDateObj['year']) {
-                    if (cellDate['day'] < startDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
-            if (
-                cellDate[key] < startDateObj[key] ||
-                cellDate[key] > endDateObj[key]
-            )
-                return false;
-        }
-    } else {
-        for (const key in startDateObj) {
-            if (startDateObj[key] !== cellDate[key]) return false;
-        }
-    }
-
-    return true;
-};
 
 const selectDate = (currDate, cellLabel, isActive) => {
     if (!isActive) return;
