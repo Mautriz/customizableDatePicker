@@ -18,33 +18,6 @@ export const isSameDate = (startDate, cellDate, endDate) => {
             day: endDate.getDate()
         };
         for (const key in startDateObj) {
-            if (
-                cellDateObj['year'] < endDateObj['year'] &&
-                cellDateObj['year'] > startDateObj['year']
-            )
-                return true;
-            if (
-                cellDateObj['month'] < endDateObj['month'] &&
-                cellDateObj['month'] > startDateObj['month']
-            )
-                return true;
-            if (startDateObj['month'] < endDateObj['month']) {
-                if (cellDateObj['month'] === endDateObj['month']) {
-                    if (cellDateObj['day'] > endDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                if (cellDateObj['month'] === startDateObj['month']) {
-                    if (cellDateObj['day'] < startDateObj['day']) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
             if (startDateObj['year'] < endDateObj['year']) {
                 if (
                     cellDateObj['year'] === startDateObj['year'] &&
@@ -68,7 +41,41 @@ export const isSameDate = (startDate, cellDate, endDate) => {
                         return true;
                     }
                 }
-                if (cellDateObj['year'] === startDateObj['year']) {
+                if (
+                    cellDateObj['year'] === startDateObj['year'] &&
+                    cellDateObj['month'] === startDateObj['month']
+                ) {
+                    if (cellDateObj['day'] < startDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if (
+                    cellDateObj['year'] === startDateObj['year'] &&
+                    cellDateObj['month'] < startDateObj['month']
+                )
+                    return false;
+            }
+            if (
+                cellDateObj['year'] < endDateObj['year'] &&
+                cellDateObj['year'] > startDateObj['year']
+            )
+                return true;
+            if (
+                cellDateObj['month'] < endDateObj['month'] &&
+                cellDateObj['month'] > startDateObj['month']
+            )
+                return true;
+            if (startDateObj['month'] < endDateObj['month']) {
+                if (cellDateObj['month'] === endDateObj['month']) {
+                    if (cellDateObj['day'] > endDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if (cellDateObj['month'] === startDateObj['month']) {
                     if (cellDateObj['day'] < startDateObj['day']) {
                         return false;
                     } else {

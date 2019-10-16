@@ -154,7 +154,7 @@ const useToggle = (value = false) => {
     return [val, toggleVal];
 };
 
-const Calendar = props => {
+export const Calendar = props => {
     const [year, setYear] = useState(props.initialDate.getFullYear());
     const [month, setMonth] = useState(props.initialDate.getMonth()); // 0 === Gennaio 1 === Febbraio etc..
     const [day, setDay] = useState(props.initialDate.getDate());
