@@ -38,6 +38,7 @@ const Wrapper = styled.div`
         background-color: rgba(0, 0, 0, 0.2);
     }
     .__calcell {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -46,6 +47,19 @@ const Wrapper = styled.div`
         border: 1px solid rgba(0, 0, 0, 0.4);
         border-left: none;
         border-top: none;
+
+        &_choosen {
+            &::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 0, 0, 0.4);
+            }
+        }
+
         &__selected {
             background-color: blue;
         }
@@ -123,12 +137,23 @@ const renderCells = (
         } else {
             cellLabel = (currIndex - initialMonthDate + 1) % daysInMonth;
         }
-
+        const cellDate = new Date(
+            `${currDate.year}-${currDate.month + 1}-${cellLabel}`
+        );
         const isSame = isSameDate(
             currDate.selectedDate,
-            new Date(`${currDate.year}-${currDate.month + 1}-${cellLabel}`),
+            cellDate,
             currDate.selectedEndDate
         );
+
+        const isChooseByUser = (() => {
+            if (!isActive) return false;
+            for (const date of props.activeDates) {
+                if (isSameDate(cellDate, date)) return true;
+            }
+        })();
+
+        const choosenClass = isChooseByUser ? '__calcell_choosen' : null;
 
         return (
             <div
@@ -138,7 +163,9 @@ const renderCells = (
                     hasPassed ? 'test2' : 'nontest2'
                 } ${props.cellClass} ${
                     isSame && isActive ? '__calcell__selected' : null
-                } __calcell-${cellLabel}`}
+                } __calcell-${cellLabel}
+                ${choosenClass}
+                `}
             >
                 <span className={`__calcell__label ${props.cellLabelClass}`}>
                     {cellLabel}
@@ -303,7 +330,8 @@ Calendar.defaultProps = {
         'Sabato',
         'Domenica'
     ],
-    onFinish: (...stuff) => console.log(...stuff)
+    onFinish: (...stuff) => console.log(...stuff),
+    activeDates: [new Date(), new Date('2020-4-02')]
 };
 
 Calendar.propTypes = {
@@ -321,7 +349,10 @@ Calendar.propTypes = {
     langLabels: PropTypes.arrayOf(PropTypes.string),
     monthLabels: PropTypes.arrayOf(PropTypes.string),
     daysLabels: PropTypes.arrayOf(PropTypes.string),
-    onFinish: PropTypes.func
+    onFinish: PropTypes.func,
+    activeDates: PropTypes.arrayOf(
+        PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string])
+    )
 };
 
 export default Calendar;
