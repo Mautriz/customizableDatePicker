@@ -53,13 +53,13 @@ const Wrapper = styled.div`
 `;
 
 const isSameDate = (startDate, date2, endDate) => {
-    const dateObj1 = {
+    const startDateObj = {
         year: startDate.getFullYear(),
         month: startDate.getMonth(),
         day: startDate.getDate()
     };
 
-    const dateObj2 = {
+    const cellDate = {
         year: date2.getFullYear(),
         month: date2.getMonth(),
         day: date2.getDate()
@@ -71,34 +71,75 @@ const isSameDate = (startDate, date2, endDate) => {
             month: endDate.getMonth(),
             day: endDate.getDate()
         };
-        for (const key in dateObj1) {
+        for (const key in startDateObj) {
             if (
-                dateObj2['year'] > dateObj1['year'] &&
-                dateObj2['year'] < endDateObj['year']
+                cellDate['year'] < endDateObj['year'] &&
+                cellDate['year'] > startDateObj['year']
             )
                 return true;
-
             if (
-                dateObj2['month'] > dateObj1['month'] &&
-                dateObj2['month'] < endDateObj['month']
+                cellDate['month'] < endDateObj['month'] &&
+                cellDate['month'] > startDateObj['month']
             )
                 return true;
+            if (startDateObj['month'] < endDateObj['month']) {
+                if (cellDate['month'] === endDateObj['month']) {
+                    if (cellDate['day'] > endDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if (cellDate['month'] === startDateObj['month']) {
+                    if (cellDate['day'] < startDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+
+            if (startDateObj['year'] < endDateObj['year']) {
+                if (
+                    cellDate['year'] === startDateObj['year'] &&
+                    cellDate['month'] > startDateObj['month']
+                ) {
+                    return true;
+                }
+                if (
+                    cellDate['year'] === endDateObj['year'] &&
+                    cellDate['month'] < endDateObj['month']
+                ) {
+                    return true;
+                }
+                if (
+                    cellDate['year'] === endDateObj['year'] &&
+                    cellDate['month'] === endDateObj['month']
+                ) {
+                    if (cellDate['day'] > endDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                if (cellDate['year'] === startDateObj['year']) {
+                    if (cellDate['day'] < startDateObj['day']) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            }
 
             if (
-                dateObj2['year'] === dateObj1['year'] &&
-                dateObj2['year'] < endDateObj['year']
-            )
-                return true;
-
-            if (
-                dateObj2[key] < dateObj1[key] ||
-                dateObj2[key] > endDateObj[key]
+                cellDate[key] < startDateObj[key] ||
+                cellDate[key] > endDateObj[key]
             )
                 return false;
         }
     } else {
-        for (const key in dateObj1) {
-            if (dateObj1[key] !== dateObj2[key]) return false;
+        for (const key in startDateObj) {
+            if (startDateObj[key] !== cellDate[key]) return false;
         }
     }
 
@@ -174,7 +215,7 @@ const renderCells = (
                     hasPassed ? 'test2' : 'nontest2'
                 } ${props.cellClass} ${
                     isSame && isActive ? '__calcell__selected' : null
-                }`}
+                } __calcell-${cellLabel}`}
             >
                 <span className={`__calcell__label ${props.cellLabelClass}`}>
                     {cellLabel}
