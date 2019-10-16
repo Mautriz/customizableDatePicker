@@ -38,6 +38,9 @@ const Wrapper = styled.div`
         background-color: rgba(0, 0, 0, 0.2);
     }
     .__calcell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: calc(100% / 7);
         height: 3rem;
         border: 1px solid rgba(0, 0, 0, 0.4);
@@ -223,7 +226,6 @@ export const Calendar = props => {
 
     return (
         <Wrapper className={`${props.className}`}>
-            {isSpan && <h5>You are selecting the END DATE</h5>}
             <div className={`__calheader ${props.headerClass}`}>
                 <div className={`__calheader__buttons`}>
                     <button onClick={removeMonth}>RIMUOVI MESE</button>
@@ -262,6 +264,7 @@ export const Calendar = props => {
                 <button onClick={toggleIsSpan}>SELECT END</button>
                 <button onClick={finishPicking}>FINISH</button>
             </div>
+            {isSpan && <h5>You are selecting the END DATE</h5>}
         </Wrapper>
     );
 };
