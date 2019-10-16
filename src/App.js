@@ -5,8 +5,16 @@ import uuid from 'uuid/v4';
 import { isSameDate } from './dateComparator';
 
 const Wrapper = styled.div`
+    background-color: rgba(0, 100, 0, 0.2);
     box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid black;
+
     .__calheader {
+        &__buttons {
+            display: flex;
+            justify-content: space-between;
+        }
         text-align: center;
         &__label {
             display: inline-block;
@@ -50,6 +58,11 @@ const Wrapper = styled.div`
             width: calc(100% / 7);
             text-align: center;
         }
+    }
+    .__cal__endbuttons {
+        padding-top: 1rem;
+        display: flex;
+        justify-content: space-between;
     }
 `;
 
@@ -211,9 +224,11 @@ export const Calendar = props => {
     return (
         <Wrapper className={`${props.className}`}>
             {isSpan && <h5>You are selecting the END DATE</h5>}
-            <button onClick={removeMonth}>RIMUOVI MESE</button>
-            <button onClick={addMonth}>AUMENTA MESE</button>
             <div className={`__calheader ${props.headerClass}`}>
+                <div className={`__calheader__buttons`}>
+                    <button onClick={removeMonth}>RIMUOVI MESE</button>
+                    <button onClick={addMonth}>AUMENTA MESE</button>
+                </div>
                 <span
                     className={`__calheader__label ${props.headerLabelClass}`}
                 >
@@ -227,7 +242,7 @@ export const Calendar = props => {
             </div>
             <div className="__caldays">
                 {Array.from({ length: 7 }).map((_, i) => (
-                    <div className="__caldays__cell">
+                    <div key={uuid()} className="__caldays__cell">
                         <div className="__caldays__label">
                             {props.daysLabels[i].slice(0, 3)}.
                         </div>
@@ -243,8 +258,10 @@ export const Calendar = props => {
                     rows
                 )}
             </div>
-            <button onClick={toggleIsSpan}>SELECT END</button>
-            <button onClick={finishPicking}>FINISH</button>
+            <div className={`__cal__endbuttons`}>
+                <button onClick={toggleIsSpan}>SELECT END</button>
+                <button onClick={finishPicking}>FINISH</button>
+            </div>
         </Wrapper>
     );
 };
