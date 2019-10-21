@@ -105,9 +105,8 @@ const renderCells = (
 ) => {
     const cells = Array.from({ length: cellsNum });
     return cells.map((el, i) => {
-        let isActive = true;
         const currIndex = i + 1 + rowNum * 7;
-        isActive =
+        let isActive =
             !(currIndex < initialMonthDate) &&
             currIndex < initialMonthDate + daysInMonth;
 
@@ -140,20 +139,27 @@ const renderCells = (
         const cellDate = new Date(
             `${currDate.year}-${currDate.month + 1}-${cellLabel}`
         );
-        const isSame = isSameDate(
-            currDate.selectedDate,
-            cellDate,
-            currDate.selectedEndDate
-        );
+        const isSame = props.onlyActive
+            ? props.isActive &&
+              isSameDate(
+                  currDate.selectedDate,
+                  cellDate,
+                  currDate.selectedEndDate
+              )
+            : isSameDate(
+                  currDate.selectedDate,
+                  cellDate,
+                  currDate.selectedEndDate
+              );
 
-        const isChooseByUser = (() => {
+        const isChosenByUser = (() => {
             if (!isActive) return false;
             for (const date of props.activeDates) {
                 if (isSameDate(cellDate, date)) return true;
             }
         })();
 
-        const choosenClass = isChooseByUser ? '__calcell_choosen' : null;
+        const choosenClass = isChosenByUser ? '__calcell_choosen' : null;
 
         return (
             <div
@@ -215,6 +221,8 @@ export const Calendar = props => {
         () => props.onFinish(selectedDate, selectedEndDate),
         [props, selectedDate, selectedEndDate]
     );
+
+    const singleDate = React.useCallback(() => setSelectedEndDate(null), []);
 
     const currDate = {
         year,
@@ -288,7 +296,8 @@ export const Calendar = props => {
                 )}
             </div>
             <div className={`__cal__endbuttons`}>
-                <button onClick={toggleIsSpan}>SELECT END</button>
+                <button onClick={toggleIsSpan}>SELECT END/START</button>
+                <button onClick={singleDate}>ONLY ONE DATE</button>
                 <button onClick={finishPicking}>FINISH</button>
             </div>
             {isSpan && <h5>You are selecting the END DATE</h5>}
@@ -331,7 +340,8 @@ Calendar.defaultProps = {
         'Domenica'
     ],
     onFinish: (...stuff) => console.log(...stuff),
-    activeDates: [new Date(), new Date('2020-4-02')]
+    activeDates: [new Date(), new Date('2020-4-02')],
+    onlyActive: false
 };
 
 Calendar.propTypes = {
@@ -352,7 +362,8 @@ Calendar.propTypes = {
     onFinish: PropTypes.func,
     activeDates: PropTypes.arrayOf(
         PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string])
-    )
+    ),
+    onlyActive: PropTypes.bool
 };
 
 export default Calendar;
